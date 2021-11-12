@@ -1,3 +1,21 @@
+## v1.14.0 (15/11/2021)
+
+**Common**
+* **Work In Progress** Added LMDB library as a dependency. The library is currently not used and turned off by default in CMake.
+* Added proper handling of the `SSLException` error in the Android `olp::http::Network` implementation. Now it is mapped to `olp::http::ErrorCode::IO_ERROR` and subsequently handled as a retryable error.
+* Added proper handling of the `NSURLErrorCannotConnectToHost` error in the iOS `olp::http::Network` implementation. Now it is mapped to `olp::http::ErrorCode::IO_ERROR` and subsequently handled as a retryable error.
+* Added the `olp::cache::KeyGenerator` class. This class will empower users to access, insert, or remove cache entries without going through Data SDK client.
+*  Removed the retry code from the Android `olp::http::Network` implementation. The `olp::client::OlpClient` class handles the retries.
+* Fixed various doxygen warnings.
+
+**olp-cpp-sdk-authentication**
+* Added `olp::core::RetrySettings` to the `olp::authentication::AuthenticationSettings`. Now, the user can configure the `olp::authentication::AuthenticationClient` to use the provided retry settings for all online requests.
+* Added a new operator to the `olp::authentication::TokenProvider` that accepts the `olp::client::CancelationContext` as input and returns `olp::authentication::TokenResponse`. Now the authentication requests can be cancelled, and the clients are able to forward the proper error messages during authentication to the caller.
+* Added a new `token_provider` parameter to `olp::client::AuthenticationSettings`. The new token provider accepts `olp::client::CancelationContext` and returns the `olp::client::OauthTokenResponse` response. Now, the `olp::client::OlpClient::CallApi` calls can be cancelled during authentication.
+* Deprecated `olp::authentication::TokenProvider::operator()()` method together with the `olp::authentication::AuthenticationSettings::provider` member. Both will be removed by 10.2022.
+* Deprecated the `olp::authentication::TokenResult::GetHttpStatus` and `olp::authentication::TokenResult::GetErrorResponse` API. It will be removed by 10.2022.
+* Fixed the cancelation error code that occurred after a timeout, that occurs for `olp::authentication::AuthenticationClient` APIs. Now the correct error is returned.
+
 ## v1.13.0 (27/09/2021)
 
 **Common**
