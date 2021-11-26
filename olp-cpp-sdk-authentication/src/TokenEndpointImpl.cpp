@@ -127,11 +127,30 @@ client::OlpClient::RequestBodyType GenerateClientBody(
   auto content = data.GetString();
   return std::make_shared<RequestBodyData>(content, content + data.GetSize());
 }
+
+AuthenticationSettings RemoveOathEndpointFromUrl(
+    AuthenticationSettings settings) {
+  // Remove /oauth2/token from url to make sure only the base url is used
+  auto old_token_endpoint_url = settings.token_endpoint_url;
+  AuthenticationSettings newSettings = std::move(settings);
+  std::string kOauthEndpointStr = kOauthEndpoint;
+  auto pos = newSettings.token_endpoint_url.find(kOauthEndpointStr);
+  if (pos != std::string::npos) {
+    newSettings.token_endpoint_url.erase(pos, kOauthEndpointStr.size());
+  }
+
+  OLP_SDK_LOG_WARNING_F(
+      kLogTag, "AuthenticationSettings: old url='%s', new url='%s'",
+      old_token_endpoint_url.c_str(), newSettings.token_endpoint_url.c_str());
+
+  return newSettings;
+}
 }  // namespace
 
 TokenEndpointImpl::TokenEndpointImpl(Settings settings)
     : credentials_(std::move(settings.credentials)),
-      settings_(ConvertSettings(std::move(settings))),
+      settings_(
+          RemoveOathEndpointFromUrl(ConvertSettings(std::move(settings)))),
       auth_client_(settings_) {}
 
 client::CancellationToken TokenEndpointImpl::RequestToken(

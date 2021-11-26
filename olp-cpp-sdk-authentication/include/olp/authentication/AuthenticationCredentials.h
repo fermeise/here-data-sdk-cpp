@@ -95,6 +95,16 @@ class AUTHENTICATION_API AuthenticationCredentials {
   AuthenticationCredentials(std::string key, std::string secret);
 
   /**
+   * @brief Creates the `AuthenticationCredentials` instance
+   *
+   * @param key Access key ID.
+   * @param secret Access key secret.
+   * @param endpoint_url Token endpoint url
+   */
+  AuthenticationCredentials(std::string key, std::string secret,
+                            std::string endpoint_url);
+
+  /**
    * @brief Gets the access key ID from the `AuthenticationCredentials`
    * instance.
    *
@@ -110,9 +120,18 @@ class AUTHENTICATION_API AuthenticationCredentials {
    */
   const std::string& GetSecret() const;
 
+  /**
+   * @brief Gets the token endpoint url from the `AuthenticationCredentials`
+   * instance.
+   *
+   * @return The const reference to the access token endpoint url member.
+   */
+  const std::string& GetEndpointUrl() const;
+
  private:
   std::string key_;
   std::string secret_;
+  std::string endpoint_url_;
 };
 
 }  // namespace authentication
